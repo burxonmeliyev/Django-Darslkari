@@ -1,0 +1,77 @@
+{% extends 'news/base.html' %}
+
+{% block title %}{{ news.title }} - NewsHub{% endblock %}
+
+{% block content %}
+{% if messages %}
+    <div class="messages">
+        {% for message in messages %}
+            <div class="message {{ message.tags }}">{{ message }}</div>
+        {% endfor %}
+    </div>
+{% endif %}
+
+<article class="detail-card">
+    <div class="detail-head">
+        <div>
+            <p class="eyebrow">Yangiliklar detail</p>
+            <h1>{{ news.title }}</h1>
+            <div class="detail-meta">
+                <span>{{ news.views }} views</span>
+                <span>{{ news.comments }} comments</span>
+                <span>{{ news.likes }} likes</span>
+            </div>
+        </div>
+        <a class="button outline" href="{% url 'news:news_list' %}">Orqaga</a>
+    </div>
+
+    <div class="detail-body">
+        <p>{{ news.content|linebreaksbr }}</p>
+
+        {% if news.file %}
+            <div class="file-block">
+                <strong>Fayl:</strong>
+                <a href="{{ news.file.url }}" target="_blank">Yuklab olish</a>
+            </div>
+        {% endif %}
+
+        <div class="tag-list detail-tags">
+            {% for tag in news.tag_list %}
+                <span class="tag">{{ tag }}</span>
+            {% empty %}
+                <span class="tag">Umumiy</span>
+            {% endfor %}
+        </div>
+    </div>
+
+    <div class="interaction-section">
+        <form method="post" class="like-form">
+            {% csrf_token %}
+            <button type="submit" name="like" class="button like-btn">👍 Like ({{ news.likes }})</button>
+        </form>
+    </div>
+
+    <div class="comments-section">
+        <h3>Izohlar ({{ comments|length }})</h3>
+
+        {% for comment in comments %}
+            <div class="comment">
+                <div class="comment-header">
+                    <strong>{{ comment.name }}</strong>
+                    <span class="comment-date">{{ comment.created_at|date:"d.m.Y H:i" }}</span>
+                </div>
+                <p>{{ comment.content }}</p>
+            </div>
+        {% endfor %}
+
+        <div class="comment-form">
+            <h4>Yangi izoh qo'shish</h4>
+            <form method="post">
+                {% csrf_token %}
+                {{ form.as_p }}
+                <button type="submit" name="comment" class="button">Izoh qo'shish</button>
+            </form>
+        </div>
+    </div>
+</article>
+{% endblock %}

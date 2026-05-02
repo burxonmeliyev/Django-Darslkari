@@ -1,0 +1,43 @@
+{% extends 'news/base.html' %}
+
+{% block title %}Yangiliklar - NewsHub{% endblock %}
+
+{% block content %}
+<section class="hero-card">
+    <div>
+        <p class="eyebrow">So'nggi yangiliklar</p>
+        <h1>O'zbekcha va xalqaro yangiliklar bilan har kuni yangilang.</h1>
+        <p class="hero-text">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Bizning yangiliklar sahifamiz orqali dolzarb voqealar, sport, texnologiya va madaniyat yangiliklarini kuzatib boring.</p>
+    </div>
+</section>
+
+<section class="news-grid">
+    {% if news_list %}
+        {% for news in news_list %}
+            <article class="news-card">
+                <div class="card-meta">
+                    <span>{{ news.views }} views</span>
+                    <span>{{ news.likes }} likes</span>
+                </div>
+                <h2>{{ news.title }}</h2>
+                <p>{{ news.content|truncatechars:150 }}</p>
+                <div class="card-footer">
+                    <div class="tag-list">
+                        {% for tag in news.tag_list %}
+                            <span class="tag">{{ tag }}</span>
+                        {% empty %}
+                            <span class="tag">Umumiy</span>
+                        {% endfor %}
+                    </div>
+                    <a class="button" href="{% url 'news:news_detail' news.pk %}">Batafsil</a>
+                </div>
+            </article>
+        {% endfor %}
+    {% else %}
+        <div class="empty-state">
+            <h3>Hozircha yangiliklar yo'q</h3>
+            <p>Ma'lumotlar bazasida hech qanday yangilik saqlanmagan. Admin panel orqali yangilik qo'shishni boshlang.</p>
+        </div>
+    {% endif %}
+</section>
+{% endblock %}
